@@ -3,8 +3,8 @@ import pygame
 from car import Car
 
 # Constant variables
-SCREEN_HEIGHT = 800
-SCREEN_WIDTH = 600
+SCREEN_HEIGHT = 1500
+SCREEN_WIDTH = 800
 CAR_HEIGHT = 192
 CAR_WIDTH = 112
 GENERATION = 0
@@ -22,11 +22,14 @@ pygame.display.set_caption('Self Driving Car!')
 icon = pygame.image.load('red_car.png')
 pygame.display.set_icon(icon)
 
+# Map to be tested
+game_map = pygame.image.load('map.png')
+
 
 def main():
     """Main method for runing the pygame window"""
 
-    car = Car()
+    car = Car(game_map)
 
     dif_x = 0
     dif_y = 0
@@ -35,7 +38,8 @@ def main():
     running = True
     while running:
         # RGB - Red, Green, Blue
-        screen.fill((40, 40, 40))
+        # screen.fill((40, 40, 40))
+        screen.blit(game_map, (0, 0))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
