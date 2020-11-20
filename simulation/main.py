@@ -76,7 +76,9 @@ def main():
 
         # Update car methods
         car.update(dif_x, dif_y, dif_angle)
-        car.draw(screen)
+
+        if not car.get_collided():
+            car.draw(screen)
 
         # update display
         pygame.display.update()

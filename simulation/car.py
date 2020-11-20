@@ -1,11 +1,11 @@
 import math
 import pygame as pg
-from pygameUtils import rotate
+from pygameUtils import rotate, calc_sides
 
 CAR_HEIGHT = 100
 CAR_WIDTH = 100
 RADAR_COLOR = (0, 0, 255)
-TRACK_COLOR = (255, 255, 255, 255)
+WHITE_COLOR = (255, 255, 255, 255)
 
 
 class Car(object):
@@ -19,9 +19,11 @@ class Car(object):
         )
         self.rotate_surface = self.surface
         self.x_pos = 700
-        self.y_pos = 600
+        self.y_pos = 650
         self.angle = 0
         self.speed = 1
+        self.collided = False
+        self.collision_points = []
         self.radars = []
         self.center = [
             self.x_pos + 50, self.y_pos + 50
@@ -41,6 +43,8 @@ class Car(object):
         self.rotate_surface = rotate(self.surface, self.angle)
 
         # Clear the radars that have been used
+        self.update_collision_points()
+        self.check_collision()
         self.radars.clear()
 
         # Draw the radars in the given angles
@@ -64,7 +68,7 @@ class Car(object):
         )
 
         # We have to check if one of the sides is out of the track
-        while not self.game_map.get_at((x_len, y_len)) == TRACK_COLOR and length < 300:
+        while not self.game_map.get_at((x_len, y_len)) == WHITE_COLOR and length < 300:
             # Change the length and update x and y values
             length = length + 1
 
@@ -97,3 +101,23 @@ class Car(object):
             position, _ = radar
             pg.draw.line(screen, RADAR_COLOR, self.center, position, 1)
             pg.draw.circle(screen, RADAR_COLOR, position, 2)
+
+    def update_collision_points(self):
+        """Calls for calc_sides method in order to get the sides of the car"""
+        self.collision_points = calc_sides(self.center, self.angle)
+
+    def check_collision(self):
+        """Checks if one of the collision points of the car is a white pixel
+            which if it is, means it got out of the track"""
+        self.collided = False
+
+        for point in self.collision_points:
+            if self.game_map.get_at((
+                int(point[0]), int(point[1])
+            )) == WHITE_COLOR:
+                self.collided = True
+                break
+
+    def get_collided(self):
+        """Returns if the car has collided or not"""
+        return self.collided
