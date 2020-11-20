@@ -67,10 +67,24 @@ class Car(object):
             ) * length
         )
 
+        # Check if the pixel we want is not out of range
+        try:
+            pixel = self.game_map.get_at((x_len, y_len))
+        except IndexError:
+            pixel = WHITE_COLOR
+
         # We have to check if one of the sides is out of the track
-        while not self.game_map.get_at((x_len, y_len)) == WHITE_COLOR and length < 300:
-            # Change the length and update x and y values
-            length = length + 1
+        while pixel != WHITE_COLOR and length < 300:
+
+            try:
+                # Try to get the furthest pixel in the game
+                pixel = self.game_map.get_at((x_len, y_len))
+            except IndexError:
+                # If it fails, just set it as a white color
+                pixel = WHITE_COLOR
+            else:
+                # Change the length and update x and y values
+                length = length + 1
 
             # Update x values
             x_len = int(
@@ -112,11 +126,15 @@ class Car(object):
         self.collided = False
 
         for point in self.collision_points:
-            if self.game_map.get_at((
-                int(point[0]), int(point[1])
-            )) == WHITE_COLOR:
+
+            try:
+                if self.game_map.get_at((
+                    int(point[0]), int(point[1])
+                )) == WHITE_COLOR:
+                    self.collided = True
+                    break
+            except:
                 self.collided = True
-                break
 
     def get_collided(self):
         """Returns if the car has collided or not"""

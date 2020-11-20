@@ -23,7 +23,7 @@ def rotate(image, angle):
 
 def calc_sides(coords, angle):
     """Calculates the four points of the car (top and bottom right & left)"""
-    length = 40
+    length = 50
     top_left = [
         coords[0] + math.cos(math.radians(360 - (angle + 30))) * length,
         coords[1] + math.sin(math.radians(360 - (angle + 30))) * length

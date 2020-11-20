@@ -23,8 +23,9 @@ icon = pygame.image.load('red_car.png')
 pygame.display.set_icon(icon)
 
 # Map to be tested
-game_map = pygame.image.load('practice_track.png')
+# game_map = pygame.image.load('practice_track.png')
 # game_map = pygame.image.load('track1.png')
+game_map = pygame.image.load('track2.png')
 
 
 def main():
@@ -35,7 +36,7 @@ def main():
     dif_x = 0
     dif_y = 0
     dif_angle = 0
-    car_speed = 1
+    car_speed = 3
 
     running = True
     while running:
