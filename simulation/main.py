@@ -23,7 +23,8 @@ icon = pygame.image.load('red_car.png')
 pygame.display.set_icon(icon)
 
 # Map to be tested
-game_map = pygame.image.load('map.png')
+game_map = pygame.image.load('practice_track.png')
+# game_map = pygame.image.load('track1.png')
 
 
 def main():
@@ -34,6 +35,7 @@ def main():
     dif_x = 0
     dif_y = 0
     dif_angle = 0
+    car_speed = 1
 
     running = True
     while running:
@@ -49,18 +51,18 @@ def main():
             if event.type == pygame.KEYDOWN:
                 # Vertical
                 if event.key == pygame.K_LEFT:
-                    dif_x = -0.1
+                    dif_x = -car_speed
                 if event.key == pygame.K_RIGHT:
-                    dif_x = 0.1
+                    dif_x = car_speed
 
                 # Horizontal
                 if event.key == pygame.K_DOWN:
-                    dif_y = 0.1
+                    dif_y = car_speed
                 if event.key == pygame.K_UP:
-                    dif_y = -0.1
+                    dif_y = -car_speed
 
                 if event.key == pygame.K_SPACE:
-                    dif_angle = 0.1
+                    dif_angle = car_speed
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:

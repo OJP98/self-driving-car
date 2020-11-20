@@ -5,6 +5,7 @@ from pygameUtils import rotate
 CAR_HEIGHT = 100
 CAR_WIDTH = 100
 RADAR_COLOR = (0, 0, 255)
+TRACK_COLOR = (255, 255, 255, 255)
 
 
 class Car(object):
@@ -18,13 +19,12 @@ class Car(object):
         )
         self.rotate_surface = self.surface
         self.x_pos = 700
-        self.y_pos = 650
-        self.rect = [self.x_pos, self.y_pos]
+        self.y_pos = 600
         self.angle = 0
         self.speed = 1
         self.radars = []
         self.center = [
-            self.x_pos + int(CAR_WIDTH/2), self.y_pos + int(CAR_HEIGHT/2)
+            self.x_pos + 50, self.y_pos + 50
         ]
 
     def draw(self, screen):
@@ -37,11 +37,15 @@ class Car(object):
         self.x_pos += dif_x
         self.y_pos += dif_y
         self.angle += dif_angle
+        self.center = [int(self.x_pos + 50), int(self.y_pos + 50)]
         self.rotate_surface = rotate(self.surface, self.angle)
 
+        # Clear the radars that have been used
+        self.radars.clear()
+
         # Draw the radars in the given angles
-        for d in range(-90, 120, 45):
-            self.update_radar(d)
+        for degree in range(-90, 120, 45):
+            self.update_radar(degree)
 
     def update_radar(self, degree):
         """Updates the car radars and appends them to its list"""
@@ -52,8 +56,7 @@ class Car(object):
             self.center[0] + math.cos(
                 math.radians(360 - (self.angle + degree))
             ) * length
-        )
-        # Calculate the y center of the car, considering its rotation
+        )  # Calculate the y center of the car, considering its rotation
         y_len = int(
             self.center[1] + math.sin(
                 math.radians(360 - (self.angle + degree))
@@ -61,10 +64,20 @@ class Car(object):
         )
 
         # We have to check if one of the sides is out of the track
-        while not self.game_map.get_at((x_len, y_len)) == (255, 255, 255, 255) and length < 300:
-            length += 100
+        while not self.game_map.get_at((x_len, y_len)) == TRACK_COLOR and length < 300:
+            # Change the length and update x and y values
+            length = length + 1
+
+            # Update x values
             x_len = int(
                 self.center[0] + math.cos(
+                    math.radians(360 - (self.angle + degree))
+                ) * length
+            )
+
+            # Update y values
+            y_len = int(
+                self.center[1] + math.sin(
                     math.radians(360 - (self.angle + degree))
                 ) * length
             )
@@ -83,4 +96,4 @@ class Car(object):
         for radar in self.radars:
             position, _ = radar
             pg.draw.line(screen, RADAR_COLOR, self.center, position, 1)
-            pg.draw.circle(screen, RADAR_COLOR, position, 5)
+            pg.draw.circle(screen, RADAR_COLOR, position, 2)
