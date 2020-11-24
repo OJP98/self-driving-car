@@ -1,6 +1,7 @@
 import sys
 import pygame
 from car import Car
+import neat
 
 # Constant variables
 SCREEN_HEIGHT = 1500
@@ -10,12 +11,14 @@ CAR_WIDTH = 112
 GENERATION = 0
 
 # Initialize the game
-pygame.init()
+# pygame.init()
 
 # Initial screen values
+'''
 screen = pygame.display.set_mode((
     SCREEN_HEIGHT, SCREEN_WIDTH
 ))
+'''
 
 # Window display settings
 pygame.display.set_caption('Self Driving Car!')
@@ -52,9 +55,11 @@ def main():
             if event.type == pygame.KEYDOWN:
                 # Vertical
                 if event.key == pygame.K_LEFT:
-                    dif_x = -car_speed
+                    #dif_x = -car_speed
+                    dif_angle = -car_speed
                 if event.key == pygame.K_RIGHT:
-                    dif_x = car_speed
+                    #dif_x = car_speed
+                    dif_angle = car_speed
 
                 # Horizontal
                 if event.key == pygame.K_DOWN:
@@ -68,6 +73,7 @@ def main():
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                     dif_x = 0
+                    dif_angle = 0
 
                 if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                     dif_y = 0
@@ -85,5 +91,104 @@ def main():
         pygame.display.update()
 
 
-main()
-sys.exit()
+def run_car(genomes, config):
+
+    # Init NEAT
+    nets = []
+    cars = []
+
+    for id, g in genomes:
+        net = neat.nn.FeedForwardNetwork.create(g, config)
+        nets.append(net)
+        g.fitness = 0
+
+        # Init my cars
+        cars.append(Car(game_map))
+
+    # Init my game
+    pygame.init()
+    screen = pygame.display.set_mode((
+        SCREEN_HEIGHT, SCREEN_WIDTH
+    ))
+
+    clock = pygame.time.Clock()
+    generation_font = pygame.font.SysFont("Arial", 70)
+    font = pygame.font.SysFont("Arial", 30)
+    #map = pygame.image.load('map.png')
+
+    # Main loop
+    global GENERATION
+    GENERATION += 1
+    while True:
+        screen.blit(game_map, (0, 0))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit(0)
+
+        # Input my data and get result from network
+        for index, car in enumerate(cars):
+            output = nets[index].activate(car.get_data())
+            i = output.index(max(output))
+            if i == 0:
+                car.angle += 10
+            else:
+                car.angle -= 10
+
+        # Update car and fitness
+        remain_cars = 0
+        for i, car in enumerate(cars):
+            if not(car.get_collided()):
+                remain_cars += 1
+                car.update()
+                genomes[i][1].fitness += car.get_reward()
+
+        # check
+        if remain_cars == 0:
+            break
+
+        # Drawing
+        screen.blit(game_map, (0, 0))
+        for car in cars:
+            if not(car.get_collided()):
+                car.draw(screen)
+
+        text = generation_font.render(
+            "Generation : " + str(GENERATION), True, (0, 0, 0))
+        text_rect = text.get_rect()
+        text_rect.center = (SCREEN_WIDTH + 300, 150)
+        screen.blit(text, text_rect)
+
+        text = font.render("Remain cars : " +
+                           str(remain_cars), True, (0, 0, 0))
+        text_rect = text.get_rect()
+        text_rect.center = (SCREEN_WIDTH + 300, 200)
+        screen.blit(text, text_rect)
+
+        text = font.render("Number of sensors : " +
+                           str(5), True, (0, 0, 0))
+        text_rect = text.get_rect()
+        text_rect.center = (SCREEN_WIDTH + 300, 230)
+        screen.blit(text, text_rect)
+
+        pygame.display.flip()
+        clock.tick(0)
+
+
+# main()
+# sys.exit()
+if __name__ == "__main__":
+    # Set configuration file
+    config_path = "./config-feedforward.txt"
+    config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
+                                neat.DefaultSpeciesSet, neat.DefaultStagnation, config_path)
+
+    # Create core evolution algorithm class
+    p = neat.Population(config)
+
+    # Add reporter for fancy statistical result
+    p.add_reporter(neat.StdOutReporter(True))
+    stats = neat.StatisticsReporter()
+    p.add_reporter(stats)
+
+    # Run NEAT
+    p.run(run_car, 1000)

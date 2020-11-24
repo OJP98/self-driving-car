@@ -18,10 +18,11 @@ class Car(object):
             self.surface, (CAR_WIDTH, CAR_HEIGHT)
         )
         self.rotate_surface = self.surface
-        self.x_pos = 700
-        self.y_pos = 650
+        self.x_pos = 600
+        self.y_pos = 655
         self.angle = 0
-        self.speed = 1
+        self.speed = 7
+        self.distance = 0
         self.collided = False
         self.collision_points = []
         self.radars = []
@@ -34,11 +35,14 @@ class Car(object):
         screen.blit(self.rotate_surface, [self.x_pos, self.y_pos])
         self.draw_radar(screen)
 
-    def update(self, dif_x, dif_y, dif_angle):
+    def update(self):
         """Updates the car itself"""
-        self.x_pos += dif_x
-        self.y_pos += dif_y
-        self.angle += dif_angle
+        #self.x_pos += dif_x
+        #self.y_pos += dif_y
+        self.distance += self.speed
+        #self.angle += dif_angle
+        self.x_pos += math.cos(math.radians(360-self.angle)) * self.speed
+        self.y_pos += math.sin(math.radians(360-self.angle)) * self.speed
         self.center = [int(self.x_pos + 50), int(self.y_pos + 50)]
         self.rotate_surface = rotate(self.surface, self.angle)
 
@@ -111,6 +115,7 @@ class Car(object):
 
     def draw_radar(self, screen):
         """Draws the radars on the screen"""
+        self.get_data()
         for radar in self.radars:
             position, _ = radar
             pg.draw.line(screen, RADAR_COLOR, self.center, position, 1)
@@ -139,3 +144,12 @@ class Car(object):
     def get_collided(self):
         """Returns if the car has collided or not"""
         return self.collided
+
+    def get_reward(self):
+        return self.distance/50.0
+
+    def get_data(self):
+        inputLayer = [0, 0, 0, 0, 0]
+        for i, radar in enumerate(self.radars):
+            inputLayer[i] = int(radar[1]/30)
+        return inputLayer
