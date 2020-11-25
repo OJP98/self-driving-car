@@ -14,25 +14,22 @@ GENERATION = 0
 
 load_dotenv()
 
-# Initialize the game
-# pygame.init()
-
-# Initial screen values
-'''
-screen = pygame.display.set_mode((
-    SCREEN_HEIGHT, SCREEN_WIDTH
-))
-'''
-
 # Window display settings
 pygame.display.set_caption('Self Driving Car!')
 icon = pygame.image.load('red_car.png')
 pygame.display.set_icon(icon)
 
 # Map to be tested
-# game_map = pygame.image.load('practice_track.png')
-game_map = pygame.image.load('track1.png')
-# game_map = pygame.image.load('track2.png')
+env_map = os.getenv('MAP')
+
+if env_map == '1':
+    game_map = pygame.image.load('practice_track.png')
+elif env_map == '2':
+    game_map = pygame.image.load('track1.png')
+elif game_map == '3':
+    game_map = pygame.image.load('track2.png')
+else:
+    game_map = pygame.image.load('practice_track.png')
 
 
 def main():
