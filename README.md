@@ -45,9 +45,7 @@ Quick note: The map can only be 1, 2 or 3. 1 is the easiest map, meanwhile 3 is 
 
 
 ## Video Demonstration
-
-## Video Demonstration
-<a href=https://www.youtube.com/watch?v=eSVx6LJKfRc
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=eSVx6LJKfRc
 " target="_blank"><img src="http://img.youtube.com/vi/eSVx6LJKfRc/0.jpg" 
 alt="Youtube video thumbnail" width="800" height="450" border="10" /></a>
 
