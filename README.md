@@ -4,6 +4,7 @@ Little self learning racing car made in python and a genetic algorithm implement
 ## Requirements
 
 * Python 3
+* Python package manager (pip)
 
 
 ## Installation
@@ -11,7 +12,7 @@ Little self learning racing car made in python and a genetic algorithm implement
 Use the package manager **pip** to install the requirements.
 
 ```bash
-pip install -r requirements
+pip install -r requirements.txt
 ```
 
 ## Usage
@@ -41,6 +42,14 @@ Quick note: The map can only be 1, 2 or 3. 1 is the easiest map, meanwhile 3 is 
 2. Edit the file *.env* and the value of *MAP* to the difficulty of the map you'd like
 3. Save changes and close the file
 4. Run `python main.py`
+
+
+## Video Demonstration
+
+## Video Demonstration
+<a href=https://www.youtube.com/watch?v=eSVx6LJKfRc
+" target="_blank"><img src="http://img.youtube.com/vi/eSVx6LJKfRc/0.jpg" 
+alt="Youtube video thumbnail" width="800" height="450" border="10" /></a>
 
 
 ## Developers
