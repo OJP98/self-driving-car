@@ -1,11 +1,14 @@
 import math
 import pygame as pg
 from pygameUtils import rotate, calc_sides
+from dotenv import load_dotenv
+import os
 
 CAR_HEIGHT = 100
 CAR_WIDTH = 100
 RADAR_COLOR = (0, 0, 255)
 WHITE_COLOR = (255, 255, 255, 255)
+load_dotenv()
 
 
 class Car(object):
@@ -51,8 +54,20 @@ class Car(object):
         self.check_collision()
         self.radars.clear()
 
+        sensoresList = []
+        if (int(os.getenv("NUM_SENSORES")) == 3):
+            sensoresList = list(range(-90, 120, 90))
+        elif (int(os.getenv("NUM_SENSORES")) == 4):
+            sensoresList = list(range(-90, 120, 60))
+        elif (int(os.getenv("NUM_SENSORES")) == 5):
+            sensoresList = list(range(-90, 120, 45))
+        elif (int(os.getenv("NUM_SENSORES")) == 9):
+            sensoresList = list(range(-90, 120, 25))
+        elif (int(os.getenv("NUM_SENSORES")) == 11):
+            sensoresList = list(range(-90, 120, 20))
+
         # Draw the radars in the given angles
-        for degree in range(-90, 120, 45):
+        for degree in sensoresList:
             self.update_radar(degree)
 
     def update_radar(self, degree):
@@ -149,7 +164,10 @@ class Car(object):
         return self.distance/50.0
 
     def get_data(self):
-        inputLayer = [0, 0, 0, 0, 0]
+        inputLayer = []
+        for i in range(int(os.getenv("NUM_SENSORES"))):
+            inputLayer.append(0)
+
         for i, radar in enumerate(self.radars):
             inputLayer[i] = int(radar[1]/30)
         return inputLayer

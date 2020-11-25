@@ -2,6 +2,8 @@ import sys
 import pygame
 from car import Car
 import neat
+from dotenv import load_dotenv
+import os
 
 # Constant variables
 SCREEN_HEIGHT = 1500
@@ -9,6 +11,8 @@ SCREEN_WIDTH = 800
 CAR_HEIGHT = 192
 CAR_WIDTH = 112
 GENERATION = 0
+
+load_dotenv()
 
 # Initialize the game
 # pygame.init()
@@ -165,7 +169,7 @@ def run_car(genomes, config):
         screen.blit(text, text_rect)
 
         text = font.render("Number of sensors : " +
-                           str(5), True, (0, 0, 0))
+                           str(os.getenv("NUM_SENSORES")), True, (0, 0, 0))
         text_rect = text.get_rect()
         text_rect.center = (SCREEN_WIDTH + 300, 230)
         screen.blit(text, text_rect)
@@ -174,8 +178,6 @@ def run_car(genomes, config):
         clock.tick(0)
 
 
-# main()
-# sys.exit()
 if __name__ == "__main__":
     # Set configuration file
     config_path = "./config-feedforward.txt"
