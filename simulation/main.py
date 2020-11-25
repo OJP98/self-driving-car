@@ -26,7 +26,7 @@ if env_map == '1':
     game_map = pygame.image.load('practice_track.png')
 elif env_map == '2':
     game_map = pygame.image.load('track1.png')
-elif game_map == '3':
+elif env_map == '3':
     game_map = pygame.image.load('track2.png')
 else:
     game_map = pygame.image.load('practice_track.png')
